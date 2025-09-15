@@ -1,63 +1,64 @@
-1. Common Steps in CI
+# Continuous Integration (CI) Overview
 
-Linting
+## 1. Common Steps in CI
 
-Purpose: ensure code is clean, consistent, and maintainable.
+### **Linting**
+- **Purpose**: Ensure code is clean, consistent, and maintainable.
+- **Tools**: 
+  - [Flake8](http://flake8.pycqa.org/)
+  - [Pylint](https://pylint.pycqa.org/)
 
-Tools: Flake8, Pylint.
+### **Testing**
+- **Purpose**: Verify that existing features work and prevent breaking changes.
+- **Tools**: 
+  - [pytest](https://pytest.org/)
+  - [unittest](https://docs.python.org/3/library/unittest.html)
 
-Testing
+### **Building**
+- **Purpose**: Package the code into a runnable bundle.
+- **Tools**:
+  - [setuptools](https://setuptools.pypa.io/en/latest/)
+  - [poetry](https://python-poetry.org/)
 
-Purpose: verify that existing features work and prevent breaking changes.
+---
 
-Tools: pytest, unittest.
+## 2. Alternatives to Jenkins and GitHub Actions
 
-Building
+### **Travis CI**
+- Simple setup and configuration.
+- Supports parallel builds and multiple architectures.
+- Good for teams needing quick enterprise-supported CI solutions.
 
-Purpose: package the code into a runnable bundle.
+### **SpaceLift**
+- Automates infrastructure-as-code (IaC) deployments (OpenTofu, Terraform, etc.).
+- Detects and remediates drift in environments.
+- Simplifies CI/CD automation and improves compliance and visibility.
 
-Tools: setuptools, poetry.
+---
 
-2. Alternatives to Jenkins and GitHub Actions
+## 3. Cloud vs Self-Hosted CI
 
-Travis CI
+### **Cloud-Based CI**
+- **Pros**:
+  - Easier for beginners, no server management required.
+  - Scales automatically with project needs.
+- **Cons**:
+  - Limited control over infrastructure.
+  - Dependent on service provider’s limitations and costs.
 
-Simple setup and configuration.
+### **Self-Hosted CI**
+- **Pros**:
+  - Offers more control and flexibility.
+  - Better for teams with advanced security, compliance, or custom build requirements.
+- **Cons**:
+  - Requires management of infrastructure.
+  - More complex to set up and maintain.
 
-Supports parallel builds and multiple architectures.
+### **Decision Factors**:
+- Team expertise.
+- Project sensitivity (security, compliance).
+- Expected build load.
+- Budget.
 
-Good for teams needing quick enterprise-supported CI solutions.
-
-SpaceLift
-
-Automates infrastructure-as-code (IaC) deployments (OpenTofu, Terraform, etc.).
-
-Detects and remediates drift in environments.
-
-Simplifies CI/CD automation and improves compliance and visibility.
-
-3. Cloud vs Self-Hosted CI
-
-Cloud-Based
-
-Easier for beginners, no server management required.
-
-Scales automatically with project needs.
-
-Self-Hosted
-
-Offers more control and flexibility.
-
-Better for teams with advanced security, compliance, or custom build requirements.
-
-Decision factors:
-
-Team expertise
-
-Project sensitivity (security, compliance)
-
-Expected build load
-
-Budget
-
-Personal note: Starting with a cloud-based CI is easier to understand the workflow; later, a self-hosted setup can be adopted for more control.
+### **Personal Note**:
+Starting with a cloud-based CI is easier to understand the workflow; later, a self-hosted setup can be adopted for more control.
