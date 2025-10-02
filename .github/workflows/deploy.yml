@@ -1,0 +1,13 @@
+name: Render Deployment
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    triggered_deployment_job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Trigger Deployment
+              run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
