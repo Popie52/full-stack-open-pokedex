@@ -21,7 +21,7 @@ import { describe } from 'node:test'
 
 describe('Pokedex', () => {
   test('front page can be opened', async ({ page }) => {
-    await page.goto('http://localhost:5000')
+    await page.goto('/')
     await expect(page.getByText('ivysaur')).toBeVisible()
     await expect(
       page.getByText(
@@ -31,7 +31,7 @@ describe('Pokedex', () => {
   })
 
   test('can navigate to ivysaur page', async ({ page }) => {
-    await page.goto('http://localhost:5000')
+    await page.goto('/')
 
     await page.getByText('ivysaur').click()
 
