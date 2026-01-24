@@ -12,3 +12,17 @@ jobs:
             - name: Say Hello
               run: |
                   echo "Hello World"
+
+    date_today:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Now it is
+              run: |
+                  date
+
+    content:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Directory content
+              run: |
+                  ls -l
