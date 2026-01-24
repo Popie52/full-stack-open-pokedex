@@ -1,6 +1,6 @@
 // @ts-check
-import { test, expect } from "@playwright/test";
-import { describe } from "node:test";
+import { test, expect } from '@playwright/test'
+import { describe } from 'node:test'
 
 // test('has title', async ({ page }) => {
 //   await page.goto('https://playwright.dev/');
@@ -19,14 +19,14 @@ import { describe } from "node:test";
 //   await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
 // });
 
-describe("Pokedex", () => {
-  test("front page can be opened", async ({ page }) => {
-    await page.goto("");
-    await expect(page.getByText("ivysaur")).toBeVisible();
+describe('Pokedex', () => {
+  test('front page can be opened', async ({ page }) => {
+    await page.goto('')
+    await expect(page.getByText('ivysaur')).toBeVisible()
     await expect(
       page.getByText(
-        "Pokémon and Pokémon character names are trademarks of Nintendo.",
+        'Pokémon and Pokémon character names are trademarks of Nintendo.',
       ),
-    ).toBeVisible();
-  });
-});
+    ).toBeVisible()
+  })
+})
