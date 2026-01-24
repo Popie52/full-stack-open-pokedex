@@ -29,4 +29,12 @@ describe('Pokedex', () => {
       ),
     ).toBeVisible()
   })
+
+  test('can navigate to ivysaur page', async ({ page }) => {
+    await page.goto('http://localhost:8081/')
+
+    await page.getByText('ivysaur').click()
+
+    await expect(page.getByText('chlorophyll')).toBeVisible()
+  })
 })
