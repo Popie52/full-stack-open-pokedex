@@ -18,8 +18,14 @@ jobs:
               run: npm ci
             - name: Install playwright
               run: npx playwright install --with-deps
+            - name: Start server
+              run: |
+                    npm run start &
+                    SERVER_PID=$!
+                    echo "Server PID: $SERVER_PID"
+                    npx wait-on http://localhost:8081
             - name: Run playwright tests
-              run: npx playwright test
+              run: npm run test:e2e
             - uses: actions/upload-artifact@v4
               if: ${{ !cancelled() }}
               with:
