@@ -74,8 +74,8 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npm run start-prod',
-    // port: 5000,
-    url: 'http://localhost:8081',
+    port: 8081,
+    // url: 'http://localhost:8081',
     timeout: 120*1000,
     reuseExistingServer: !process.env.CI,
   },
