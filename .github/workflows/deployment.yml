@@ -1,14 +1,15 @@
-name: Render Deploy
+name: Deploy to Render via Hook
 
 on:
-  push:
-  pull_request:
+    push:
+        branches:
+            - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ttskch/render-deploy@v1.0.0
-        with:
-          api-key: ${{ secrets.RENDER_API_KEY }}
-          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Trigger Render Deploy Hook
+              env:
+                RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+              run: curl -X POST "$RENDER_DEPLOY_HOOK"
