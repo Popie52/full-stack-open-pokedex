@@ -1,19 +1,14 @@
-name: Trigger Render Deployment
+name: Render Deploy
+
 on:
   push:
-    branches:
-      - main
+  pull_request:
+
 jobs:
-  main:
-    name: Deploy to Render
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@main 
-
-      - name: Create deployment
-        uses: sws2apps/render-deployment@main 
+      - uses: ttskch/render-deploy@v1.0.0
         with:
-          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
-          apiKey: ${{ secrets.RENDER_API_KEY }}
-          node-version: '20'
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
