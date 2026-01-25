@@ -24,7 +24,7 @@ module.exports = {
       version: 'detect'
     }
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', 'cypress/', 'cypress.config.js'],
   'rules': {
     'indent': [
       'error',
