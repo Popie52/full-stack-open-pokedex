@@ -59,6 +59,68 @@ jobs:
           echo "Deploying to production"
           curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
 
+      # ✅ SUCCESS notification
+      - name: Discord success notification
+        if: success()
+        uses: Ilshidur/action-discord@v2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: CI Bot
+          DISCORD_EMBEDS: |
+            [{
+              "title": "✅ Deployment Successful",
+              "description": "A new version has been deployed successfully.",
+              "color": 3066993,
+              "fields": [
+                {
+                  "name": "Repository",
+                  "value": "${{ github.repository }}",
+                  "inline": true
+                },
+                {
+                  "name": "Commit",
+                  "value": "${{ github.sha }}",
+                  "inline": false
+                }
+              ]
+            }]
+
+      # ❌ FAILURE notification (more verbose)
+      - name: Discord failure notification
+        if: failure()
+        uses: Ilshidur/action-discord@v2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: CI Bot
+          DISCORD_EMBEDS: |
+            [{
+              "title": "❌ Build / Deploy Failed",
+              "description": "Deployment failed. Check the commit below.",
+              "color": 15158332,
+              "fields": [
+                {
+                  "name": "Repository",
+                  "value": "${{ github.repository }}",
+                  "inline": true
+                },
+                {
+                  "name": "Branch",
+                  "value": "${{ github.ref_name }}",
+                  "inline": true
+                },
+                {
+                  "name": "Commit SHA",
+                  "value": "${{ github.sha }}",
+                  "inline": false
+                },
+                {
+                  "name": "Commit Message",
+                  "value": "${{ github.event.head_commit.message }}",
+                  "inline": false
+                }
+              ]
+            }]
+
   # Job 3: Tag release (only if deploy succeeded)
   tag_release:
     needs: [evaluate_skip, deploy_to_production]
