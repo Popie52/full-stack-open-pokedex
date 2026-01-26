@@ -1,48 +1,78 @@
 name: Deployment pipeline
 
 on:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
-        types: [opened, synchronize]
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize]
 
 permissions:
-    contents: write
+  contents: write
 
 jobs:
-    simple_deployment_pipeline:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+  # Job 0: Decide whether deployment/tagging is allowed
+  evaluate_skip:
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.check.outputs.should_deploy }}
 
-            - name: Lint
-              run: echo "Running Lint"
+    steps:
+      - id: check
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Commit messages: ${{ join(github.event.commits.*.message, ' | ') }}"
 
-            - name: Test
-              run: echo "Running Tests"
-            
-            - name: Trigger Render Deploy Hook
-              if: ${{ github.event_name == 'push' }}
-              env:
-                RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-              run: curl -X POST "$RENDER_DEPLOY_HOOK"
+          if [[ "${{ github.event_name }}" == "push" ]] && \
+             [[ ! "${{ join(github.event.commits.*.message, ' ') }}" =~ "#skip" ]]; then
+            echo "should_deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_deploy=false" >> "$GITHUB_OUTPUT"
+          fi
 
-    tags_release:
-        needs: [simple_deployment_pipeline]
-        runs-on: ubuntu-latest
+  # Job 1: Lint & Test (runs for PRs and pushes)
+  lint_and_test:
+    runs-on: ubuntu-latest
 
-        if: ${{ github.event_name == 'push' }}
-        steps: 
-            - name: Checkout
-              uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-            - name: Bump version and push tag
-              uses: anothrNick/github-tag-action@1.64.0
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                DEFAULT_BUMP: patch
-                WITH_V: true
+      - name: Lint
+        run: echo "Running Lint"
+
+      - name: Test
+        run: echo "Running Tests"
+
+  # Job 2: Deploy (push to main only, no #skip)
+  deploy_to_production:
+    needs: [evaluate_skip, lint_and_test]
+    runs-on: ubuntu-latest
+    if: needs.evaluate_skip.outputs.should_deploy == 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production"
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+
+  # Job 3: Tag release (only if deploy succeeded)
+  tag_release:
+    needs: [evaluate_skip, deploy_to_production]
+    runs-on: ubuntu-latest
+    if: >
+      needs.evaluate_skip.outputs.should_deploy == 'true' &&
+      needs.deploy_to_production.result == 'success'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.64.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          WITH_V: true
